@@ -6,15 +6,15 @@ const Button = ({value, handler}) => {
   return <button onClick={handler}>{value}</button>
 }
 
-const Show = ({anecdote, handler, votecount}) => {
+const Show = ({anecdote, votecount, handler}) => {
   return ( 
     <>
       <h1>{anecdote}</h1> 
       <p>Votes: {votecount}</p>
-      <Button value="Vote" handler={handler}/>
     </>
   )
 }
+
 
 const App = () => {
   const anecdotes = [
@@ -58,17 +58,52 @@ const App = () => {
     return true;
   }
 
+  const hasVotes = () => {
+    // console.log("hasVotes()", maxVote());
+    return maxVote() >= 0
+  }
+
+  const maxVote = () => {
+    let max = 0;
+    let ind = -1; // Array index of max vote
+    votes.map((vote, index) => {
+      if (vote > max) { max = vote; ind = index; }
+    })    
+    return ind;
+  }
+
   const showAnecdote = () => {
     console.log("selected", selected)
     if (!isSelected()) return "";
     let votecount = votes[selected];
-    return <Show anecdote={anecdotes[selected]} handler={voteClick} votecount={votecount} />
+    return (
+      <>
+      <Show anecdote={anecdotes[selected]} handler={voteClick} votecount={votecount} />
+      <Button value="Vote" handler={voteClick}/>      
+      </>      
+    )
   }
+
+  const showAnecdoteWithMaxVotes = () => {
+    let ind = maxVote()
+    console.log("showAnecdotesWithMaxVotes()", ind)
+    if (!isSelected()) return "";
+    if (!hasVotes()) return "";
+    let votecount = votes[ind];
+    return (
+      <>
+      <p>Eniten ääniä:</p>
+      <Show anecdote={anecdotes[ind]} votecount={votecount} />
+      </>
+    ) 
+  }
+
 
   return (
     <div>
       {showAnecdote()}
       <Button value="Paina niin näytän anekdootin" handler={handleClick}/>
+      {showAnecdoteWithMaxVotes()}
     </div>
   )
 }

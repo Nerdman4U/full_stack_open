@@ -1,11 +1,17 @@
 import { useState } from 'react'
 
+const printResult = (result) => {   
+  return result ? result : "Ei palautetta"
+}
+
 const Statistics = ({good,neutral,bad,all,average,positive}) => {
+  console.log(all)
+  if (all < 1) return <p>No feeback given</p>
   return <>
     <p>good {good}</p>
     <p>neutral {neutral}</p>
     <p>bad {bad}</p>
-    <p>all {all}</p>
+    <p>all {printResult(all)}</p>
     <p>average {average}</p>
     <p>positive {positive}</p>
   </>
@@ -24,10 +30,6 @@ const App = () => {
   const all = () => good+neutral+bad  
   const average = () => good - bad
   const positive = () => all() ? good / all() : 0
-  const print = (m) => {
-    const result = m() 
-    return result ? result : "Ei palautetta"
-  }
 
   return (
     <div>
@@ -36,7 +38,7 @@ const App = () => {
       <Button value="Neutral" handleClick={() => setNeutral(neutral + 1)}/>
       <Button value="Bad" handleClick={() => setBad(bad + 1)}/>
       <h1>Statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad} all={print(all)} average={average()} positive={positive()}/>
+      <Statistics good={good} neutral={neutral} bad={bad} all={all()} average={average()} positive={positive()}/>
     </div>
   )
 }

@@ -33,14 +33,15 @@ const App = () => {
   }
   
   const Total = (props) => {
-    return <p>Number of exercises {props.total}</p>
+    let parts = props.parts    
+    return <p>Number of exercises {parts.reduce((sum,part) => {return sum + part.exercises},0)}</p>
   } 
 
   return (
     <div>
       <Header course={course} />
       <Content parts={parts} />
-      <Total total={parts.reduce((sum,part) => {return sum + part.exercises},0)} />
+      <Total parts={parts} />
     </div>
   )
 }

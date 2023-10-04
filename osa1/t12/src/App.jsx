@@ -6,8 +6,14 @@ const Button = ({value, handler}) => {
   return <button onClick={handler}>{value}</button>
 }
 
-const Show = ({value}) => {
-  return <h1>{value}</h1>
+const Show = ({anecdote, handler, votecount}) => {
+  return ( 
+    <>
+      <h1>{anecdote}</h1> 
+      <p>Votes: {votecount}</p>
+      <Button value="Vote" handler={handler}/>
+    </>
+  )
 }
 
 const App = () => {
@@ -23,6 +29,7 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(-1)
+  const [votes, setVotes] = useState([0,0,0,0,0,0,0,0])
 
   const pickOne = () => {
     const pick = Math.floor(Math.random()*anecdotes.length)    
@@ -33,16 +40,31 @@ const App = () => {
     setSelected(pickOne())
   }
 
-  const getAnecdote = () => {
+  const voteClick = () => {
+    // console.log("VoteClick()")
+    if (!isSelected()) return false
+    let result = votes.slice()
+    result[selected] = result[selected] + 1
+    // console.log(result)
+    setVotes(result)
+  }
+
+  const isSelected = () => {
+    if (selected < 0) return false
+    if (selected >= anecdotes.length) return false;
+    return true;
+  }
+
+  const showAnecdote = () => {
     console.log("selected", selected)
-    if (selected < 0) return ""
-    if (selected >= anecdotes.length) return ""
-    return anecdotes[selected]
+    if (!isSelected()) return "";
+    let votecount = votes[selected];
+    return <Show anecdote={anecdotes[selected]} handler={voteClick} votecount={votecount} />
   }
 
   return (
     <div>
-      <Show value={getAnecdote()}/>
+      {showAnecdote()}
       <Button value="Paina niin näytän anekdootin" handler={handleClick}/>
     </div>
   )

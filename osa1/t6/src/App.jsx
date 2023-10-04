@@ -5,11 +5,11 @@ const printResult = (result) => {
 }
 
 const StatisticLine = ({text,value}) => {
-  return <p>{text} {value}</p>
+  return <tr><td>{text}</td><td>{value}</td></tr>
 }
 
 const Statistics = ({good,neutral,bad,all,average,positive}) => {
-  if (all < 1) return <p>No feeback given</p>
+  if (all < 1) return <tr><td>No feeback given</td></tr>
   return <>
     <StatisticLine text="good" value={good}/>
     <StatisticLine text="neutral" value={neutral}/>
@@ -40,8 +40,12 @@ const App = () => {
       <Button value="Good" handleClick={() => setGood(good + 1)}/>
       <Button value="Neutral" handleClick={() => setNeutral(neutral + 1)}/>
       <Button value="Bad" handleClick={() => setBad(bad + 1)}/>
-      <h1>Statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad} all={all()} average={average()} positive={positive()}/>
+      <table>
+        <caption><h1>Statistics</h1></caption>
+        <tbody>
+        <Statistics good={good} neutral={neutral} bad={bad} all={all()} average={average()} positive={positive()}/>
+        </tbody>
+      </table>
     </div>
   )
 }

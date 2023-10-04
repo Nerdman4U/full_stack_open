@@ -4,16 +4,19 @@ const printResult = (result) => {
   return result ? result : "Ei palautetta"
 }
 
+const StatisticLine = ({text,value}) => {
+  return <p>{text} {value}</p>
+}
+
 const Statistics = ({good,neutral,bad,all,average,positive}) => {
-  console.log(all)
   if (all < 1) return <p>No feeback given</p>
   return <>
-    <p>good {good}</p>
-    <p>neutral {neutral}</p>
-    <p>bad {bad}</p>
-    <p>all {printResult(all)}</p>
-    <p>average {average}</p>
-    <p>positive {positive}</p>
+    <StatisticLine text="good" value={good}/>
+    <StatisticLine text="neutral" value={neutral}/>
+    <StatisticLine text="bad" value={bad}/>
+    <StatisticLine text="all" value={printResult(all)}/>
+    <StatisticLine text="average" value={average}/>
+    <StatisticLine text="positive" value={positive}/>
   </>
 }
 

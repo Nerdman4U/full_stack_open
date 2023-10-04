@@ -36,10 +36,13 @@ const App = () => {
     return pick
   }
 
+  // Button onClick handler to select anekdote.
+  // TODO: maybe rename selectAnecdoteClick ...
   const handleClick = () => {
     setSelected(pickOne())
   }
 
+  // Button onClick handler to vote anekdote.
   const voteClick = () => {
     // console.log("VoteClick()")
     if (!isSelected()) return false

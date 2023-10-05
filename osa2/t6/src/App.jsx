@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Content = ({people}) => {
+const People = ({people}) => {
   return people.map((person) => { 
      // EI TOIMI (?): return <tr key={person.name + Date.now()}><td>{person.name}</td></tr> 
      return <tr key={person.name + Math.random()}><td>{person.name}</td><td>{person.number}</td></tr>
@@ -9,10 +9,15 @@ const Content = ({people}) => {
 
 const App = () => {
   const [people, setPeople] = useState([
-    { name: 'Arto Hellas', 'number': 123 }
+    { name: 'Arto Hellas', 'number': 123 },
+    { name: 'Arto Hellas 2', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
   const [newName, setNewName] = useState('Gimme your name')
   const [newNumber, setNewNumber] = useState('...and phone number')
+  const [visible, setVisible] = useState(people);
 
   /*
   Verify given values
@@ -53,13 +58,22 @@ const App = () => {
     setNewName(event.target.value)
   }
   const inputNumber = (event) => {
-    console.log("inputNumber() value:", event.target.value)
     setNewNumber(event.target.value)
+  }
+  const doFilter = (regexp) => people.filter((person) => person.name.match(regexp))
+  const inputFilter = (event) => {
+    if (!event.target.value) return;
+    setVisible(doFilter(new RegExp(event.target.value,"i")))
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <h2>Filter</h2>
+      { /* Filter shown with <input value={newFilter} onChange={inputFilter}/> */ }
+      Filter shown with <input onChange={inputFilter}/>
+
+      <h2>Add new</h2>
       <form onSubmit={addPerson}>
         <table>
           <tbody>
@@ -71,10 +85,11 @@ const App = () => {
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
+
+      <h2>People</h2>
       <table>
         <tbody>
-          <Content people={people} />
+          <People people={visible} />
         </tbody>
       </table>
     </div>

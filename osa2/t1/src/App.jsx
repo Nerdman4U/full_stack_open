@@ -22,6 +22,7 @@ const Course = ({course}) => {
       return <p key={part}>{part.name} {part.exercises}</p>
     }
 
+    // Tehtävä 2.3*
     const Total = ({parts}) => {            
       return <p>Number of exercises {parts.reduce((sum, part) => { return sum + part.exercises }, 0)}</p>
     }

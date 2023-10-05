@@ -13,14 +13,25 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('Gimme your name')
 
+  const verifyName = (name) => {
+    // console.log("VerifyName() name:", name,
+    //   people.some((person) => person.name === name)
+    // )
+    return people.some((person) => person.name === name)
+  }
+
   const addName = (event) => {
     event.preventDefault();
-    console.log("addName()", newName)
+    // console.log("addName()", newName, verifyName(newName))
+    if (verifyName(newName)) { 
+      alert(`\"${newName}\" exists!`)
+      return
+    }
     setPeople(people.concat({name:newName}))
   }
 
   const inputHandler = (event) => {
-    console.log(event.target.value)
+    // console.log(event.target.value)
     setNewName(event.target.value)
   }
 

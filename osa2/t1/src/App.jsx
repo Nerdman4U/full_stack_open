@@ -26,6 +26,7 @@ const Course = ({course}) => {
       return <p>Number of exercises {parts.reduce((sum, part) => { return sum + part.exercises }, 0)}</p>
     }
 
+    // Total amount of exercises is printed here.
     return parts.map((part) => { 
       return  <Part key={part.id} part={part} />
     }).concat(<Total key="total" parts={parts}/>)

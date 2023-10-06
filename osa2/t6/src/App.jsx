@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 /* 
-  filter_stuff() 
+  doFilter() 
 
   People array does not update instantly and visible people will have old data
   after adding new person. By delivering array explicitely it is possible
@@ -11,9 +11,14 @@ import { useState } from 'react'
 
   Written as old school function just to try that it works.
 */
-function filter_stuff(arr, value) {
+
+const isFound = (value) => {
   const regexp = new RegExp(value,"i")
-  return arr.filter((person) => person.name.match(regexp))
+  return (person) => person.name.match(regexp)
+} 
+
+function doFilter(arr, value) {
+  return arr.filter(isFound(value))
 }
 
 /* 
@@ -105,11 +110,11 @@ const App = () => {
 
     /* TODO: setPeople() updates people- asynchronically. People have old data and setVisible()
     will filter old array =>
-    >> setVisible(filter_stuff(newFilter)) 
+    >> setVisible(doFilter(newFilter)) 
     => New person added is NOT in people array. It seems, it must be given explicitely...
     => How to make work without passing parameters?
     */
-    setVisible(filter_stuff(result, newFilter))
+    setVisible(doFilter(result, newFilter))
   }
 
   const handleNameChange = (event) => {
@@ -127,7 +132,7 @@ const App = () => {
       return;
     }  
     setNewFilter(event.target.value);  
-    setVisible(filter_stuff(people, event.target.value))
+    setVisible(doFilter(people, event.target.value))
   }
   /*
   =====================================================

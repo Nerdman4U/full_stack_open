@@ -1,12 +1,43 @@
 import { useState } from 'react'
 
-const People = ({people}) => {
-  return people.map((person) => { 
-     // EI TOIMI (?): return <tr key={person.name + Date.now()}><td>{person.name}</td></tr> 
-     return <tr key={person.name + Math.random()}><td>{person.name}</td><td>{person.number}</td></tr>
-  })
+/* 
+  filter_stuff() 
+
+  People array does not update instantly and visible people will have old data
+  after adding new person. By delivering array explicitely it is possible
+  to filter new array instantly and have correct visible list of people.
+
+  Moved to be global method because it does have any connection to components or objects. 
+
+  Written as old school function just to try that it works.
+*/
+function filter_stuff(arr, value) {
+  const regexp = new RegExp(value,"i")
+  return arr.filter((person) => person.name.match(regexp))
 }
 
+const Filter = ({onFilterChange}) =>
+  <>Filter shown with <input onChange={onFilterChange}/></>
+
+/*
+  People component.
+  Returns a table of people.
+
+  TODO: Unique key warning exists when concanate name and Date.now(). Random number works.
+  => Ei toimi kun painaa nappia nopeasti: return <tr key={person.name + Date.now()}><td>{person.name}</td></tr> 
+*/
+const People = ({people}) => {
+  return (
+    <table>
+      <tbody>
+        { people.map((person) =>
+          <tr key={person.name + Math.random()}><td>{person.name}</td><td>{person.number}</td></tr>
+        )}
+      </tbody>
+    </table>
+  )
+}
+ 
 const App = () => {
   const [people, setPeople] = useState([
     { name: 'Arto Hellas', 'number': 123 },
@@ -17,6 +48,7 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('Gimme your name')
   const [newNumber, setNewNumber] = useState('...and phone number')
+  const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(people);
 
   /*
@@ -32,12 +64,12 @@ const App = () => {
   }
 
   /*
-  Add person.
+  submit handler
   ============================================
   */
   const addPerson = (event) => {
     event.preventDefault();
-    console.log("addName()", newName, hasName(newName))
+    console.log("App.addPerson() newName:", newName, "hasName():", hasName(newName))
     if (hasName()) {
       alert(`\"${newName}\" exists!`)
       return
@@ -50,7 +82,15 @@ const App = () => {
     const result = people.concat({name:newName, number:newNumber})
     result.reverse()
     setPeople(result)
-    setVisible(result)
+    console.log("App.addPerson() newFilter:", newFilter)
+
+    /* TODO: setPeople() updates people- asynchronically. People have old data and setVisible()
+    will filter old array =>
+    >> setVisible(filter_stuff(newFilter)) 
+    => New person added is NOT in people array. It seems, it must be given explicitely...
+    => How to make work without passing parameters?
+    */
+    setVisible(filter_stuff(result, newFilter))
   }
 
   /*
@@ -63,23 +103,21 @@ const App = () => {
   const inputNumber = (event) => {
     setNewNumber(event.target.value)
   }
-  const doFilter = (regexp) => people.filter((person) => person.name.match(regexp))
-  const inputFilter = (event) => {
+  const handleFilterChange = (event) => {
     // Show all people when filter is empty.
     if (!event.target.value) {
       setVisible(people)
       return;
-    }
-    const result = doFilter(new RegExp(event.target.value,"i"))
-    setVisible(result)
+    }  
+    setNewFilter(event.target.value);  
+    setVisible(filter_stuff(people, event.target.value))
   }
 
   return (
     <div>
-      <h2>Phonebook</h2>
-    <h2>Filter</h2>
-      { /* Filter shown with <input value={newFilter} onChange={inputFilter}/> */ }
-      Filter shown with <input onChange={inputFilter}/>
+      <h1>Phonebook</h1>
+      <h2>Filter</h2>
+      <Filter onFilterChange={handleFilterChange}/>
 
       <h2>Add new</h2>
       <form onSubmit={addPerson}>
@@ -95,11 +133,7 @@ const App = () => {
       </form>
 
       <h2>People</h2>
-      <table>
-        <tbody>
-          <People people={visible} />
-        </tbody>
-      </table>
+      <People people={visible} />
     </div>
   )
 

@@ -37,7 +37,7 @@ const App = () => {
   */
   const addPerson = (event) => {
     event.preventDefault();
-    // console.log("addName()", newName, verifyName(newName))
+    console.log("addName()", newName, hasName(newName))
     if (hasName()) {
       alert(`\"${newName}\" exists!`)
       return
@@ -47,7 +47,10 @@ const App = () => {
       alert("Missing number!")
       return
     }
-    setPeople(people.concat({name:newName, number:newNumber}))
+    const result = people.concat({name:newName, number:newNumber})
+    result.reverse()
+    setPeople(result)
+    setVisible(result)
   }
 
   /*
@@ -62,14 +65,19 @@ const App = () => {
   }
   const doFilter = (regexp) => people.filter((person) => person.name.match(regexp))
   const inputFilter = (event) => {
-    if (!event.target.value) return;
-    setVisible(doFilter(new RegExp(event.target.value,"i")))
+    // Show all people when filter is empty.
+    if (!event.target.value) {
+      setVisible(people)
+      return;
+    }
+    const result = doFilter(new RegExp(event.target.value,"i"))
+    setVisible(result)
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <h2>Filter</h2>
+    <h2>Filter</h2>
       { /* Filter shown with <input value={newFilter} onChange={inputFilter}/> */ }
       Filter shown with <input onChange={inputFilter}/>
 

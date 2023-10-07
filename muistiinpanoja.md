@@ -2,6 +2,10 @@ Muistiinpanoja materiaalista
 
 = Osa 2 =
 
+One of the arguments which setState accepts is an updater function: setState((prevState) => {}).
+
+Efekti suoritetaan heti komponentin renderöinnin jälkeen.
+
 Reactin tilaa ei saa muuttaa suoraan!
 
 = Osa 1 =

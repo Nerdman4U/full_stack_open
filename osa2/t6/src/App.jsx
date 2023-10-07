@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 /* 
   doFilter() 
@@ -8,24 +9,23 @@ import { useState } from 'react'
   to filter new array instantly and have correct visible list of people.
 
   Moved to be global method because it does have any connection to components or objects. 
-
-  Written as old school function just to try that it works.
+  =====================================================
 */
 
 const isFound = (value) => {
   const regexp = new RegExp(value,"i")
   return (person) => person.name.match(regexp)
 } 
-
 function doFilter(arr, value) {
-  return arr.filter(isFound(value))
+  return (!value) ? arr : arr.filter(isFound(value))
 }
 
 /* 
-  Components 
+  Components:
   Filter
   PersonForm
   People (phonebook list)
+  =====================================================
 */
 const Filter = ({onFilterChange}) =>
   <>Filter shown with <input onChange={onFilterChange}/></>
@@ -62,23 +62,37 @@ const People = ({people}) => {
   )
 }
 
-/* Main component. */
-const App = () => {
-  const [people, setPeople] = useState([
+/* Main component.
+
     { name: 'Arto Hellas', 'number': 123 },
     { name: 'Arto Hellas 2', number: '040-123456' },
     { name: 'Ada Lovelace', number: '39-44-5323523' },
     { name: 'Dan Abramov', number: '12-43-234345' },
     { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]) 
+  =====================================================
+*/
+const App = () => {
+  const [people, setPeople] = useState([])
   const [newName, setNewName] = useState('Gimme your name')
   const [newNumber, setNewNumber] = useState('...and phone number')
   const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(people);
 
+  useEffect(() => {
+    console.log("useEffect callback")
+    axios
+      .get('http://localhost:3001/db')
+      .then((response) => {
+        console.log("axios, callback, response:", response.data.persons)
+        setPeople(response.data.persons)
+        //setVisible(response.data.persons)
+        setVisible(doFilter(response.data.persons, newFilter))
+      })
+  }, [])
+
   /*
   Verify given values
-  ============================================
+  =====================================================
   */
   const hasName = () => {
     return people.some((person) => person.name === newName)

@@ -21,18 +21,18 @@ const App = () => {
 
   // do something asynchronically
   //if (window.Worker) {
-    console.log("worker 1")
-    const myWorker = new Worker("worker.js")
-    console.log("worker 2", myWorker)
+  console.log("worker 1")
+  const myWorker = new Worker("worker.js")
+  console.log("worker 2", myWorker)
 
-    myWorker.onmessage = (event) => {
-      console.log("app.onmessage", event)
-      setMessage(event.data)
-    }
-    myWorker.onerror = (event) => {
-      console.log("app.onerror", event)
-    }
-    console.log("app 1, myWorker:", myWorker)
+  myWorker.onmessage = (event) => {
+    console.log("app.onmessage", event)
+    setMessage(event.data)
+  }
+  myWorker.onerror = (event) => {
+    console.log("app.onerror", event)
+  }
+  console.log("app 1, myWorker:", myWorker)
   //}
   console.log("app 2, myWorker:", myWorker)
 

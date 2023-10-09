@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import personService from './services/persons'
 import axios from 'axios'
 
 /* 
@@ -63,13 +64,7 @@ const Persons = ({persons}) => {
 }
 
 /* Main component.
-
-    { name: 'Arto Hellas', 'number': 123 },
-    { name: 'Arto Hellas 2', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  =====================================================
+=====================================================
 */
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -78,16 +73,11 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(persons);
 
-  useEffect(() => {
-    console.log("useEffect callback")
-    axios
-      .get('http://localhost:3001/db')
-      .then((response) => {
-        //console.log("axios, callback, response:", response.data.persons)
-        setPersons(response.data.persons)
-        //setVisible(response.data.persons)
-        setVisible(doFilter(response.data.persons, newFilter))
-      })
+  useEffect(() => {        
+    personService._get().then((persons) => {
+      setPersons(persons)
+      setVisible(doFilter(persons, newFilter))
+    })
   }, [])
 
   /*
@@ -119,29 +109,13 @@ const App = () => {
     }
 
     const person = {name:newName, number:newNumber}
-    /*
-    const result = persons.concat({name:newName, number:newNumber})
-    result.reverse()
-    setPersons(result)
-    console.log("App.addPerson() newFilter:", newFilter)
-    */  
-  
-    /* TODO: setPersons() updates persons- asynchronically. Persons have old data and setVisible()
-    will filter old array =>
-    >> setVisible(doFilter(newFilter)) 
-    => New person added is NOT in persons array. It seems, it must be given explicitely...
-    => How to make work without passing parameters?
-    */
+    personService._post(person).then(data => {
+      console.log("personService._post() data:", data)
+      const result = persons.concat(data)
+      setPersons(result)
+      setVisible(doFilter(result, newFilter))
+    })
 
-    //setVisible(doFilter(result, newFilter))
-
-    axios
-      .post('http://localhost:3001/persons', person)
-      .then(response => {
-        const result = persons.concat(response.data)
-        setPersons(result)
-        setVisible(doFilter(result, newFilter))
-      })
   }
 
   const handleNameChange = (event) => {
@@ -161,9 +135,6 @@ const App = () => {
     setNewFilter(event.target.value);  
     setVisible(doFilter(persons, event.target.value))
   }
-  /*
-  =====================================================
-  */
 
   return (
     <div>

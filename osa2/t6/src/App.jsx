@@ -4,11 +4,8 @@
 
   1) Tulee mahdollisesti kaksi renderöintiä jostain syystä.
   => Kohdassa // console.log("renderöityy kaksi kertaa")
-
-  2) Uuden henkilön lisäyksessä. Uniikkiavain varoitus tulee jos käyttää Date.now() metodia
-  avaimessa, olisi hyvä keksiä minkä takia kun timestamp pitäisi olla uniikki.
-  Jos vastaavasti käyttää Math.random() funktiota niin varoitus poistuu.
-  => Ei toimi kun painaa nappia nopeasti: return <tr key={person.name + Date.now()}><td>{person.name}</td></tr>
+  => Johtuu tilan päivittymisestä... kun data on haettu ja persons- päivitetään
+  app- komponentti tulostetaan uudelleen.
 
 */
 
@@ -61,23 +58,32 @@ const PersonForm = ({onPersonSubmit,newName,newNumber,onNameChange,onNumberChang
   )
 }
 
-const Person = ({person}) => {
-  return <tr><td>{person.name}</td><td>{person.number}</td></tr>
+const Button = ({value, person, onRemoveClick}) => {
+  return <button value={person.id} type="button" onClick={onRemoveClick}>{value}</button>
 }
 
-const Persons = ({persons}) => {
+const Person = ({person, handleRemoveClick}) => {
+  return <tr>
+    <td>{person.name}</td>
+    <td>{person.number}</td>
+    <td><Button value="Poista" person={person} onRemoveClick={handleRemoveClick}/></td>
+  </tr>
+}
+
+const Persons = ({persons, handleRemoveClick}) => {
   return (
     <table>
       <tbody>
         {
           persons.map((person) => {
-            return <Person key={person.id} person={person}/>
+            return <Person key={person.id} person={person} handleRemoveClick={handleRemoveClick}/>
           })
         }
       </tbody>
     </table>
   )
 }
+
 
 /* Main component.
 =====================================================
@@ -89,13 +95,17 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(persons);
 
-  console.log("renderöityy kaksi kertaa")
+  //console.log("renderöityy kaksi kertaa")
 
-  useEffect(() => {        
+  const loadPersons = () => {
     personService._get().then((persons) => {
       setPersons(persons)
       setVisible(doFilter(persons, newFilter))
     })
+  }
+
+  useEffect(() => {
+    loadPersons()
   }, [])
 
   /*
@@ -153,6 +163,19 @@ const App = () => {
     setVisible(doFilter(persons, event.target.value))
   }
 
+  const handleRemoveClick = (event) => {
+    if (!window.confirm("Poistetaanko?")) return
+    console.log("Remove, button:", event.target.value)
+    const _id = event.target.value;
+    if (!_id) { console.log("No id"); return }
+    personService._delete(_id).then(data => {
+      // Get data from server after delete.
+      loadPersons()
+    }).catch(error => {
+      console.log("Error:", error)
+    })
+  }
+
   return (
     <div>
       <h1>Phonebook</h1>
@@ -169,10 +192,9 @@ const App = () => {
       />
 
       <h2>Persons</h2>
-      <Persons persons={visible} />
+      <Persons persons={visible} handleRemoveClick={handleRemoveClick} />
     </div>
   )
-
 }
 
 export default App

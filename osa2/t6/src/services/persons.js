@@ -23,4 +23,13 @@ const _put = (id,newObject) => {
     return axios.put(`${baseUrl}/${id}`, newObject)
 }
 
-export default { _get, _post, _put }
+const _delete = (id) => {
+    return axios
+        .delete(`${baseUrl}/${id}`)
+        .then(response => { return response.data })
+        .catch(error => {
+            console.log("Cannot find id, error:", error.data)
+        })
+}
+
+export default { _get, _post, _put, _delete }

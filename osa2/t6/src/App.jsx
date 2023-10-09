@@ -4,9 +4,9 @@ import axios from 'axios'
 /* 
   doFilter() 
 
-  People array does not update instantly and visible people will have old data
+  Persons array does not update instantly and visible persons will have old data
   after adding new person. By delivering array explicitely it is possible
-  to filter new array instantly and have correct visible list of people.
+  to filter new array instantly and have correct visible list of persons.
 
   Moved to be global method because it does have any connection to components or objects. 
   =====================================================
@@ -24,7 +24,7 @@ function doFilter(arr, value) {
   Components:
   Filter
   PersonForm
-  People (phonebook list)
+  Persons (phonebook list)
   =====================================================
 */
 const Filter = ({onFilterChange}) =>
@@ -50,11 +50,11 @@ const PersonForm = ({onPersonSubmit,newName,newNumber,onNameChange,onNumberChang
   TODO: Unique key warning exists when concanate name and Date.now(). Random number works.
   => Ei toimi kun painaa nappia nopeasti: return <tr key={person.name + Date.now()}><td>{person.name}</td></tr> 
 */
-const People = ({people}) => {
+const Persons = ({persons}) => {
   return (
     <table>
       <tbody>
-        { people.map((person) =>
+        { persons.map((person) =>
           <tr key={person.name + Math.random()}><td>{person.name}</td><td>{person.number}</td></tr>
         )}
       </tbody>
@@ -72,19 +72,19 @@ const People = ({people}) => {
   =====================================================
 */
 const App = () => {
-  const [people, setPeople] = useState([])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('Gimme your name')
   const [newNumber, setNewNumber] = useState('...and phone number')
   const [newFilter, setNewFilter] = useState('')
-  const [visible, setVisible] = useState(people);
+  const [visible, setVisible] = useState(persons);
 
   useEffect(() => {
     console.log("useEffect callback")
     axios
       .get('http://localhost:3001/db')
       .then((response) => {
-        console.log("axios, callback, response:", response.data.persons)
-        setPeople(response.data.persons)
+        //console.log("axios, callback, response:", response.data.persons)
+        setPersons(response.data.persons)
         //setVisible(response.data.persons)
         setVisible(doFilter(response.data.persons, newFilter))
       })
@@ -95,7 +95,7 @@ const App = () => {
   =====================================================
   */
   const hasName = () => {
-    return people.some((person) => person.name === newName)
+    return persons.some((person) => person.name === newName)
   }
   const hasNumber = () => {
     if (!newNumber) return false;
@@ -117,18 +117,31 @@ const App = () => {
       alert("Missing number!")
       return
     }
-    const result = people.concat({name:newName, number:newNumber})
-    result.reverse()
-    setPeople(result)
-    console.log("App.addPerson() newFilter:", newFilter)
 
-    /* TODO: setPeople() updates people- asynchronically. People have old data and setVisible()
+    const person = {name:newName, number:newNumber}
+    /*
+    const result = persons.concat({name:newName, number:newNumber})
+    result.reverse()
+    setPersons(result)
+    console.log("App.addPerson() newFilter:", newFilter)
+    */  
+  
+    /* TODO: setPersons() updates persons- asynchronically. Persons have old data and setVisible()
     will filter old array =>
     >> setVisible(doFilter(newFilter)) 
-    => New person added is NOT in people array. It seems, it must be given explicitely...
+    => New person added is NOT in persons array. It seems, it must be given explicitely...
     => How to make work without passing parameters?
     */
-    setVisible(doFilter(result, newFilter))
+
+    //setVisible(doFilter(result, newFilter))
+
+    axios
+      .post('http://localhost:3001/persons', person)
+      .then(response => {
+        const result = persons.concat(response.data)
+        setPersons(result)
+        setVisible(doFilter(result, newFilter))
+      })
   }
 
   const handleNameChange = (event) => {
@@ -140,13 +153,13 @@ const App = () => {
   }
 
   const handleFilterChange = (event) => {
-    // Show all people when filter is empty.
+    // Show all persons when filter is empty.
     if (!event.target.value) {
-      setVisible(people)
+      setVisible(persons)
       return;
     }  
     setNewFilter(event.target.value);  
-    setVisible(doFilter(people, event.target.value))
+    setVisible(doFilter(persons, event.target.value))
   }
   /*
   =====================================================
@@ -167,8 +180,8 @@ const App = () => {
         onNumberChange={handleNumberChange}
       />
 
-      <h2>People</h2>
-      <People people={visible} />
+      <h2>Persons</h2>
+      <Persons persons={visible} />
     </div>
   )
 

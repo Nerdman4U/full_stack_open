@@ -1,5 +1,6 @@
 # Database
 db.json
+backup_db.json
 
 # Logs
 logs

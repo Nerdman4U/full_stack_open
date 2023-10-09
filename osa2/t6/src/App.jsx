@@ -1,3 +1,17 @@
+/*
+
+  Yleisiä huomioita:
+
+  1) Tulee mahdollisesti kaksi renderöintiä jostain syystä.
+  => Kohdassa // console.log("renderöityy kaksi kertaa")
+
+  2) Uuden henkilön lisäyksessä. Uniikkiavain varoitus tulee jos käyttää Date.now() metodia
+  avaimessa, olisi hyvä keksiä minkä takia kun timestamp pitäisi olla uniikki.
+  Jos vastaavasti käyttää Math.random() funktiota niin varoitus poistuu.
+  => Ei toimi kun painaa nappia nopeasti: return <tr key={person.name + Date.now()}><td>{person.name}</td></tr>
+
+*/
+
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 import axios from 'axios'
@@ -47,17 +61,22 @@ const PersonForm = ({onPersonSubmit,newName,newNumber,onNameChange,onNumberChang
   )
 }
 
-/*
-  TODO: Unique key warning exists when concanate name and Date.now(). Random number works.
-  => Ei toimi kun painaa nappia nopeasti: return <tr key={person.name + Date.now()}><td>{person.name}</td></tr> 
-*/
+let nro = 1
+const Person = ({person}) => {
+  return <tr><td>{person.name}</td><td>{person.number}</td></tr>
+}
+
 const Persons = ({persons}) => {
   return (
     <table>
       <tbody>
-        { persons.map((person) =>
-          <tr key={person.name + Math.random()}><td>{person.name}</td><td>{person.number}</td></tr>
-        )}
+        {
+          persons.map((person) => {
+            const key = person.name + nro
+            nro++
+            return <Person person={person}/>
+          })
+        }
       </tbody>
     </table>
   )
@@ -72,6 +91,8 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('...and phone number')
   const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(persons);
+
+  console.log("renderöityy kaksi kertaa")
 
   useEffect(() => {        
     personService._get().then((persons) => {
@@ -115,7 +136,6 @@ const App = () => {
       setPersons(result)
       setVisible(doFilter(result, newFilter))
     })
-
   }
 
   const handleNameChange = (event) => {

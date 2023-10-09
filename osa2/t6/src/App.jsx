@@ -61,7 +61,6 @@ const PersonForm = ({onPersonSubmit,newName,newNumber,onNameChange,onNumberChang
   )
 }
 
-let nro = 1
 const Person = ({person}) => {
   return <tr><td>{person.name}</td><td>{person.number}</td></tr>
 }
@@ -72,9 +71,7 @@ const Persons = ({persons}) => {
       <tbody>
         {
           persons.map((person) => {
-            const key = person.name + nro
-            nro++
-            return <Person person={person}/>
+            return <Person key={person.id} person={person}/>
           })
         }
       </tbody>

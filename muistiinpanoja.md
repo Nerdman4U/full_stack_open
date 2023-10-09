@@ -2,6 +2,9 @@ Muistiinpanoja materiaalista
 
 = Osa 2 =
 
+Object spread
+  foo = { ...bar, yyy:123 }
+
 One of the arguments which setState accepts is an updater function: setState((prevState) => {}).
 
 Efekti suoritetaan heti komponentin renderöinnin jälkeen.
@@ -35,3 +38,15 @@ https://egghead.io/courses/the-beginner-s-guide-to-reactjs
 
 == Tutoriaaleja ==
 https://developer.chrome.com/docs/devtools/overview/
+
+== Muita ==
+
+An IIFE (Immediately Invoked Function Expression)
+
+In essence, blocks are finally treated as scopes in ES6, but only if you declare variables with let or const. Blocks don't create scopes for var.
+
+https://medium.com/@falsecrypt/solid-design-principles-for-javascript-single-responsibility-1-ca3b153ec28e
+
+    The Single Responsibility Principle states that every component, class or function should have a well-defined, single responsibility and only one reason to change. 
+
+

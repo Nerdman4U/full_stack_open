@@ -9,6 +9,12 @@ import Person from './components/Person'
 import Persons from './components/Persons'
 import { filterByName } from './functions'
 
+const Notification = ({notification}) => {
+  if (!notification) return
+  return (
+    <div className={className}>{notification}</div>
+  )
+}
 /* Main component.
 =====================================================
 */
@@ -18,6 +24,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('...and phone number')
   const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(persons);
+  const [notification, setNotification] = useState();
 
   // Set all persons and visible persons limited by filter.
   const showPersons = (_persons) => {
@@ -26,14 +33,30 @@ const App = () => {
     setVisible(filterByName(_persons, newFilter))
   }
 
+  const showNotification = (msg) => {
+    setNotification(msg)
+    setTimeout(() => {
+      setNotification()
+    }, 3000)
+  }
+
   useEffect(() => {
     personService._get().then((_persons) => {
       showPersons(_persons)
     })
   }, [])
 
-  const findPerson = (name) => {
-    return persons.find((person) => person.name === name )
+  /* Methods to find people.
+  =====================================================
+  */
+  const findPerson = (key, value) => {
+    return persons.find((person) => person[key] == value )
+  }
+  const findPersonById = (_id) => {
+    return findPerson("id", _id)
+  }
+  const findPersonByName = (name) => {
+    return findPerson("name", name)
   }
 
   /* Event Handlers
@@ -41,7 +64,7 @@ const App = () => {
   */
   const handlePersonSubmit = (event) => {
     event.preventDefault();
-    let person = findPerson(newName)
+    let person = findPersonByName(newName)
     //console.log("handlePersonSubmit() person:", person, "newName:", newName)
     if (!newName || !newNumber) { 
       alert(`Lisää nimi ja numero.`)
@@ -55,16 +78,21 @@ const App = () => {
       if (!confirm(`Numero on jo olemassa, päivitetäänkö ${newName}?`)) {
         return
       }
-      //console.log("handlePersonSubmit() person:", person)
+      console.log("handlePersonSubmit() person:", person)
       const changedPerson = { ...person, number:newNumber }
       personService._put(changedPerson.id, changedPerson)
         .then((data) => {
           //console.log("data:", data)
           const new_persons = persons.map((person) => {
+            console.log(person.id, changedPerson.id, person.id == changedPerson.id)
             return (person.id == changedPerson.id) ? data : person
           })
           //console.log("New:", new_persons)
+          showNotification(`Muokattu henkilöä ${data.name}`)
           showPersons(new_persons)
+        })
+        .catch((error) => {
+          showNotification(`Tapahtui virhe.`)
         })
       return
     }
@@ -73,6 +101,7 @@ const App = () => {
     person = {name:newName, number:newNumber}
     personService._post(person).then(data => {
       console.log("personService._post() data:", data)
+      showNotification(`Lisätty ${data.name}`)
       const result = persons.concat(data)
       showPersons(result)
     })
@@ -100,11 +129,14 @@ const App = () => {
     if (!window.confirm("Poistetaanko?")) return
     console.log("Remove, button:", event.target.value)
     const _id = event.target.value;
+    const person = findPersonById(_id)
     if (!_id) { console.log("No id"); return }
+    if (!person) { console.log("No person"); return }
     personService._delete(_id).then(data => {
       // Get data from server after delete.
       // loadPersons()
       // console.log("filter:", persons.filter((person) => person.id != _id))     
+      showNotification(`Henkilö ${person.name} poistettu.`)
       showPersons(persons.filter((person) => person.id != _id))
     }).catch(error => {
       console.log("Error:", error)
@@ -114,6 +146,8 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification notification={notification}/>
+
       <h2>Filter</h2>
       <Filter onFilterChange={handleFilterChange}/>
 

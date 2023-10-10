@@ -19,8 +19,14 @@ const _post = newObject => {
         })
 }
 
-const _put = (id,newObject) => {
-    return axios.put(`${baseUrl}/${id}`, newObject)
+// Data: päivitetty objekti.
+const _put = (id, modifiedObject) => {
+    return axios
+        .put(`${baseUrl}/${id}`, modifiedObject)
+        .then(response => {
+            console.log("Put, data:", response.data)
+            return response.data
+        })
 }
 
 const _delete = (id) => {

@@ -1,89 +1,13 @@
-/*
-
-  Yleisiä huomioita:
-
-  1) Tulee mahdollisesti kaksi renderöintiä jostain syystä.
-  => Kohdassa // console.log("renderöityy kaksi kertaa")
-  => Johtuu tilan päivittymisestä... kun data on haettu ja persons- päivitetään
-  app- komponentti tulostetaan uudelleen.
-
-*/
-
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
 import axios from 'axios'
 
-/* 
-  doFilter() 
-
-  Persons array does not update instantly and visible persons will have old data
-  after adding new person. By delivering array explicitely it is possible
-  to filter new array instantly and have correct visible list of persons.
-
-  Moved to be global method because it does have any connection to components or objects. 
-  =====================================================
-*/
-
-const isFound = (value) => {
-  const regexp = new RegExp(value,"i")
-  return (person) => person.name.match(regexp)
-} 
-function doFilter(arr, value) {
-  return (!value) ? arr : arr.filter(isFound(value))
-}
-
-/* 
-  Components:
-  Filter
-  PersonForm
-  Persons (phonebook list)
-  =====================================================
-*/
-const Filter = ({onFilterChange}) =>
-  <>Filter shown with <input onChange={onFilterChange}/></>
-
-const PersonForm = ({onPersonSubmit,newName,newNumber,onNameChange,onNumberChange}) => {
-  return (
-  <form onSubmit={onPersonSubmit}>
-    <table>
-      <tbody>
-      <tr><td>name: </td><td><input value={newName} onChange={onNameChange}/></td></tr>
-      <tr><td>number: </td><td><input value={newNumber} onChange={onNumberChange}/></td></tr>
-      </tbody>
-    </table>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-  )
-}
-
-const Button = ({value, person, onRemoveClick}) => {
-  return <button value={person.id} type="button" onClick={onRemoveClick}>{value}</button>
-}
-
-const Person = ({person, handleRemoveClick}) => {
-  return <tr>
-    <td>{person.name}</td>
-    <td>{person.number}</td>
-    <td><Button value="Poista" person={person} onRemoveClick={handleRemoveClick}/></td>
-  </tr>
-}
-
-const Persons = ({persons, handleRemoveClick}) => {
-  return (
-    <table>
-      <tbody>
-        {
-          persons.map((person) => {
-            return <Person key={person.id} person={person} handleRemoveClick={handleRemoveClick}/>
-          })
-        }
-      </tbody>
-    </table>
-  )
-}
-
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Button from './components/Button'
+import Person from './components/Person'
+import Persons from './components/Persons'
+import { filterByName } from './functions'
 
 /* Main component.
 =====================================================
@@ -95,29 +19,21 @@ const App = () => {
   const [newFilter, setNewFilter] = useState('')
   const [visible, setVisible] = useState(persons);
 
-  //console.log("renderöityy kaksi kertaa")
-
-  const loadPersons = () => {
-    personService._get().then((persons) => {
-      setPersons(persons)
-      setVisible(doFilter(persons, newFilter))
-    })
+  // Set all persons and visible persons limited by filter.
+  const showPersons = (_persons) => {
+    console.log("showPersons() persons:", _persons)
+    setPersons(_persons)
+    setVisible(filterByName(_persons, newFilter))
   }
 
   useEffect(() => {
-    loadPersons()
+    personService._get().then((_persons) => {
+      showPersons(_persons)
+    })
   }, [])
 
-  /*
-  Verify given values
-  =====================================================
-  */
-  const hasName = () => {
-    return persons.some((person) => person.name === newName)
-  }
-  const hasNumber = () => {
-    if (!newNumber) return false;
-    return true;
+  const findPerson = (name) => {
+    return persons.find((person) => person.name === name )
   }
 
   /* Event Handlers
@@ -125,23 +41,40 @@ const App = () => {
   */
   const handlePersonSubmit = (event) => {
     event.preventDefault();
-    console.log("App.addPerson() newName:", newName, "hasName():", hasName(newName))
-    if (hasName()) {
-      alert(`\"${newName}\" exists!`)
+    let person = findPerson(newName)
+    //console.log("handlePersonSubmit() person:", person, "newName:", newName)
+    if (!newName || !newNumber) { 
+      alert(`Lisää nimi ja numero.`)
       return
     }
-    if (!hasNumber()) {
-      console.log(newNumber)
-      alert("Missing number!")
+    if (person) {
+      if (!newNumber) {
+        alert(`Henkilö ${newName} on jo olemassa.`)
+        return
+      }
+      if (!confirm(`Numero on jo olemassa, päivitetäänkö ${newName}?`)) {
+        return
+      }
+      //console.log("handlePersonSubmit() person:", person)
+      const changedPerson = { ...person, number:newNumber }
+      personService._put(changedPerson.id, changedPerson)
+        .then((data) => {
+          //console.log("data:", data)
+          const new_persons = persons.map((person) => {
+            return (person.id == changedPerson.id) ? data : person
+          })
+          //console.log("New:", new_persons)
+          showPersons(new_persons)
+        })
       return
     }
 
-    const person = {name:newName, number:newNumber}
+    // create/post
+    person = {name:newName, number:newNumber}
     personService._post(person).then(data => {
       console.log("personService._post() data:", data)
       const result = persons.concat(data)
-      setPersons(result)
-      setVisible(doFilter(result, newFilter))
+      showPersons(result)
     })
   }
 
@@ -160,7 +93,7 @@ const App = () => {
       return;
     }  
     setNewFilter(event.target.value);  
-    setVisible(doFilter(persons, event.target.value))
+    setVisible(filterByName(persons, event.target.value))
   }
 
   const handleRemoveClick = (event) => {
@@ -170,7 +103,9 @@ const App = () => {
     if (!_id) { console.log("No id"); return }
     personService._delete(_id).then(data => {
       // Get data from server after delete.
-      loadPersons()
+      // loadPersons()
+      // console.log("filter:", persons.filter((person) => person.id != _id))     
+      showPersons(persons.filter((person) => person.id != _id))
     }).catch(error => {
       console.log("Error:", error)
     })

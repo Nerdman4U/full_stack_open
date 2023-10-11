@@ -9,10 +9,12 @@ import Person from './components/Person'
 import Persons from './components/Persons'
 import { filterByName } from './functions'
 
-const Notification = ({notification}) => {
-  if (!notification) return
+const Notification = ({notification, notificationType}) => {
+  //if (!notification) return
+  //const className = `message ${notificationType}`
+  const className = (notificationType) ? ["message",notificationType].join(" ") : ""
   return (
-    <div className={className}>{notification}</div>
+    <div id="notification" className={className}>{notification}</div>
   )
 }
 /* Main component.
@@ -23,8 +25,9 @@ const App = () => {
   const [newName, setNewName] = useState('Gimme your name')
   const [newNumber, setNewNumber] = useState('...and phone number')
   const [newFilter, setNewFilter] = useState('')
-  const [visible, setVisible] = useState(persons);
-  const [notification, setNotification] = useState();
+  const [visible, setVisible] = useState(persons)
+  const [notification, setNotification] = useState()
+  const [notificationType, setNotificationType] = useState()
 
   // Set all persons and visible persons limited by filter.
   const showPersons = (_persons) => {
@@ -33,10 +36,22 @@ const App = () => {
     setVisible(filterByName(_persons, newFilter))
   }
 
+  const clearNotification = () => {
+    setNotificationType()
+    setNotification()
+  }
   const showNotification = (msg) => {
+    if (!msg) {
+      clearNotification()
+      return
+    }
     setNotification(msg)
     setTimeout(() => {
-      setNotification()
+      // TODO: If new notification is added while this
+      // timeout is running it may not be shown.
+      // clearNotification() is added to queue and will be
+      // ran after callstack is clear.
+      clearNotification()
     }, 3000)
   }
 
@@ -88,11 +103,14 @@ const App = () => {
             return (person.id == changedPerson.id) ? data : person
           })
           //console.log("New:", new_persons)
-          showNotification(`Muokattu henkilöä ${data.name}`)
+          setNotificationType("notification")
+          showNotification(`Henkilön ${data.name} numero päivitetty.`)
           showPersons(new_persons)
         })
         .catch((error) => {
-          showNotification(`Tapahtui virhe.`)
+          console.log("error", error)
+          setNotificationType("error")
+          showNotification("Virhe henkilön tietoja päivitettäessä!")
         })
       return
     }
@@ -101,9 +119,14 @@ const App = () => {
     person = {name:newName, number:newNumber}
     personService._post(person).then(data => {
       console.log("personService._post() data:", data)
+      setNotificationType("notification")
       showNotification(`Lisätty ${data.name}`)
       const result = persons.concat(data)
       showPersons(result)
+    })
+    .catch((error) => {
+      setNotificationType("error")
+      showNotification("Virhe henkilön lisäyksessä!")
     })
   }
 
@@ -136,17 +159,19 @@ const App = () => {
       // Get data from server after delete.
       // loadPersons()
       // console.log("filter:", persons.filter((person) => person.id != _id))     
+      setNotificationType("notification")
       showNotification(`Henkilö ${person.name} poistettu.`)
       showPersons(persons.filter((person) => person.id != _id))
     }).catch(error => {
-      console.log("Error:", error)
+      setNotificationType("error")
+      showNotification("Virhe henkilöä poistettaessa!")
     })
   }
 
   return (
     <div>
       <h1>Phonebook</h1>
-      <Notification notification={notification}/>
+      <Notification notification={notification} notificationType={notificationType}/>
 
       <h2>Filter</h2>
       <Filter onFilterChange={handleFilterChange}/>

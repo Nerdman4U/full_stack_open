@@ -1,36 +1,10 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import SearchForm from './components/SearchForm'
-import CountryList from './components/CountryList'
-import Country from './components/Country'
+import Content from './components/Content'
+import countryService from './services/countries'
 
 import './App.css'
-
-const Content = ({countries, handlers, newSearch}) => {
-  if (!countries) countries = []
-  let result = ""
-  if (countries.length < 1 || !newSearch) {
-    result = <h1>Ei hakutuloksia</h1>
-  }
-  else if (countries.length === 1) {
-    result = <Country country={countries[0]} handlers={handlers}/>
-  }
-  else {
-    result = <CountryList countries={countries} handlers={handlers}/>
-  }
-  return <div className="content">{result}</div>
-}
-
-const baseUrl = "https://studies.cs.helsinki.fi/restcountries/"
-const _get = (name) => {
-  const items = (name) ? [baseUrl,'api','name',name] : [baseUrl,'api','all']
-  return axios.get(items.join("/"))
-       .then((response) => {
-          //console.log("_get() response:", response)
-          return response.data
-       })
-}
 
 function App() {
   const [countries, setCountries] = useState([])
@@ -54,7 +28,7 @@ function App() {
   }
 
   const handleShowButton = (event) => {
-    _get(event.target.value)
+    countryService._get(event.target.value)
       .then(data => {
         console.log(data)
         setVisibleCountries([].concat(data))
@@ -72,13 +46,10 @@ function App() {
   }
 
   useEffect(() => {
-    _get().then((result) => {
-      console.log("useEffect() result:", result)
+    countryService._get().then((result) => {
       setCountries(result)
     })
   }, [])
-
-  console.log("App() visible:", visibleCountries)
 
   const handlers = {
     search: handleSearchChange,

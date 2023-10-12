@@ -1,4 +1,4 @@
-const Country = ({country}) => {
+const Country = ({country, handlers}) => {
     let image,
         flag_url = ""
     const flag_ids = Object.keys(country.flags)
@@ -24,6 +24,7 @@ const Country = ({country}) => {
         </ul>
 
         { image }
+        <div><button onClick={handlers["back"]}>Back</button></div>
     </>
 }
 

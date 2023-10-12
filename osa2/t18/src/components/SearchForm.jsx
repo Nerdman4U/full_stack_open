@@ -1,7 +1,7 @@
-const SearchForm = ({value, handleSearchChange}) => {
+const SearchForm = ({value, handlers}) => {
     return <>
       find countries: 
-      <input value={value} onChange={handleSearchChange} />
+      <input id="searchForm" value={value} onChange={handlers["search"]} />
     </>
 }
   

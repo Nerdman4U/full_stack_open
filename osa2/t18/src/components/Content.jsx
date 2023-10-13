@@ -1,14 +1,14 @@
 import CountryList from './CountryList'
 import Country from './Country'
 
-const Content = ({countries, handlers, newSearch}) => {
+const Content = ({countries, handlers, newSearch, newWeather}) => {
     if (!countries) countries = []
     let result = ""
     if (countries.length < 1 || !newSearch) {
       result = <h1>Ei hakutuloksia</h1>
     }
     else if (countries.length === 1) {
-      result = <Country country={countries[0]} handlers={handlers}/>
+      result = <Country country={countries[0]} handlers={handlers} weather={newWeather}/>
     }
     else {
       result = <CountryList countries={countries} handlers={handlers}/>

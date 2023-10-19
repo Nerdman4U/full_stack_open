@@ -1,53 +1,81 @@
-Muistiinpanoja
+= Muistiinpanoja =
 
 
+== Hooks (useState, useEffect) ==
+
+Reactin tilaa ei saa muuttaa suoraan (useState)
+
+One of the arguments which setState accepts is an updater function: setState((prevState) => {}).
+
+Hookeja siis kuuluu kutsua ainoastaan React-komponentin määrittelevän funktion rungosta.
+
+setState suoritus tapahtuu asynkronisesti kuitenkin ennen renderöintiä.
+
+Efekti suoritetaan heti komponentin renderöinnin jälkeen.
+
+The Effect Hook lets you perform side effects in function components. Data fetching, setting up a subscription, and manually changing the DOM in React components are all examples of side effects.
+
+By default, effects run after every completed render, but you can choose to fire it only when certain values have changed.
+
+Safe (pyynnöt eivät aiheuta sivuvaikutuksia: get,head) and Indempotent (1+ pyyntöä aiheuttaa saman vaikutuksen: put,delete). Post ei ole safe eikä indempotent. 
 
 
-Hooks (useState, useEffect):
-- Reactin tilaa ei saa muuttaa suoraan (useState)
-- One of the arguments which setState accepts is an updater function: setState((prevState) => {}).
-- Hookeja siis kuuluu kutsua ainoastaan React-komponentin määrittelevän funktion rungosta.
-- setState suoritus tapahtuu asynkronisesti kuitenkin ennen renderöintiä.
-- Efekti suoritetaan heti komponentin renderöinnin jälkeen.
-- The Effect Hook lets you perform side effects in function components. Data fetching, setting up a subscription, and manually changing the DOM in React components are all examples of side effects.
-- By default, effects run after every completed render, but you can choose to fire it only when certain values have changed.
+== Komponentit ==
+
+Komponentteja ei kirjoiteta toisten sisään.
 
 
-Komponentit:
-- Komponentteja ei kirjoiteta toisten sisään.
+=React syntaksi=
 
-
-React syntaksi:
-- Object spread
+Object spread
   foo = { ...bar, yyy:123 }
 
 
-Debuggaus:
-- Chrome: kirjoita "debugger"
-- Helpompi tosin lisätä breakpoint.
+=Debuggaus=
+
+Chrome: Kirjoita "debugger" Helpompi tosin lisätä breakpoint.
 
 
-Javascript: 
-- JavaScriptissa this:in arvo siis määräytyy siitä, miten metodia on kutsuttu. 
-- viittaus olioon katoaa (muuttuu globaaliksi objektiksi) jos olion metodi on kopioitu referenssiksi ja kutsutaan tämän metodin kautta.
-- BIND 
-- JavaScriptissä ei ole muita tyyppejä kuin Boolean, Null, Undefined, Number, String, Symbol, BigInt ja Object.
-- An IIFE (Immediately Invoked Function Expression)
-- In essence, blocks are finally treated as scopes in ES6, but only if you declare variables with let or const. Blocks don't create scopes for var.
-- The Single Responsibility Principle states that every component, class or function should have a well-defined, single responsibility and only one reason to change. 
+=Javascript=
 
 
-Ohjelmia:
-npm (javascript package manager)
-vite (kehityspalvelin, HMR - hot module replacement)
-axios (selain-palvelin yhteys)
-json-server (kevyt backend kehityspalvelin)
+JavaScriptissa this:in arvo siis määräytyy siitä, miten metodia on kutsuttu. 
+
+Viittaus olioon katoaa (muuttuu globaaliksi objektiksi) jos olion metodi on kopioitu referenssiksi ja kutsutaan tämän metodin kautta.
+
+BIND 
 
 
-Visual Code:
-- Snippet (Koodipohjia, nopeampaa)
+JavaScriptissä ei ole muita tyyppejä kuin Boolean, Null, Undefined, Number, String, Symbol, BigInt ja Object.
 
-Linkkejä:
+An IIFE (Immediately Invoked Function Expression)
+
+In essence, blocks are finally treated as scopes in ES6, but only if you declare variables with let or const. Blocks don't create scopes for var.
+
+The Single Responsibility Principle states that every component, class or function should have a well-defined, single responsibility and only one reason to change. 
+
+Kaksi modulijärjestelmää: CommonJS(Selaimen ulkopuoliset javascript kirjastot), Ecmascript(Standardi, v6). Calling require() always use the CommonJS module loader. Calling import() always use the ECMAScript module loader.
+
+
+
+=Moduuleja, ohjelmia=
+
+
+npm           Javascript package manager
+vite          Kehityspalvelin- moduuli reactiin, 
+              HMR - hot module replacement
+nodemon       HMR- ilman reactia (kehitys ilman
+              reactia).
+json-server   Kevyt bakend kehityspalvelin
+axios         Selain-palvelin yhteys moduuli
+express       Backend webserver apukirjasto
+Visual Code   Tekstieditori
+Snippet       Visual code koodipohjia
+
+
+
+
+=Linkkejä=
 
 https://egghead.io/courses/start-learning-react
 
@@ -63,5 +91,12 @@ React, key: https://react.dev/learn/preserving-and-resetting-state#option-2-rese
 
 https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
 
+Väitöskirja jossa määritetään REST rajapinta:
+https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
+
+https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
 
 
+=Muuta=
+
+Versiointi: Major, Minor, Patch

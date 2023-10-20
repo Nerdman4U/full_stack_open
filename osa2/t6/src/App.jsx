@@ -101,7 +101,7 @@ const App = () => {
         .then((data) => {
           //console.log("data:", data)
           const new_persons = persons.map((person) => {
-            console.log(person.id, changedPerson.id, person.id == changedPerson.id)
+            console.log("handlePersonSubmit() person.id:", person.id, "changedPerson.id:", changedPerson.id, "id==id:", person.id == changedPerson.id)
             return (person.id == changedPerson.id) ? data : person
           })
           console.log("New:", new_persons)

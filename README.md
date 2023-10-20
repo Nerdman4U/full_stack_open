@@ -10,7 +10,9 @@ Full Stack Open- course 2023
 <table>
 <tbody>
 <tr><td>20.10</td><td></td></tr>
-<tr><td>09:00</td><td>Aloitin</td></tr>
+<tr><td>09:00</td><td>Korjasin markdown- syntaksia yms.</td></tr>
+<tr><td>09:20</td><td></td></tr>
+
 <tr><td>19.10</td><td></td></tr>
 <tr><td>10:00</td><td>Middlewaret</td></tr>
 <tr><td>14:00</td><td>Lopetin</td></tr>

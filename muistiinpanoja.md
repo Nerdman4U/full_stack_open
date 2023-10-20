@@ -1,7 +1,7 @@
-= Muistiinpanoja =
+# Muistiinpanoja =
 
 
-== Hooks (useState, useEffect) ==
+## Hooks (useState, useEffect)
 
 Reactin tilaa ei saa muuttaa suoraan (useState)
 
@@ -17,27 +17,32 @@ The Effect Hook lets you perform side effects in function components. Data fetch
 
 By default, effects run after every completed render, but you can choose to fire it only when certain values have changed.
 
+
+## Terms
+
 Safe (pyynnöt eivät aiheuta sivuvaikutuksia: get,head) and Indempotent (1+ pyyntöä aiheuttaa saman vaikutuksen: put,delete). Post ei ole safe eikä indempotent. 
 
+Middlewaret ovat funktioita, joiden avulla voidaan käsitellä request- ja response-olioita.
 
-== Komponentit ==
+
+## Komponentit
 
 Komponentteja ei kirjoiteta toisten sisään.
 
 
-=React syntaksi=
+## React syntaksi 
 
-Object spread
-  foo = { ...bar, yyy:123 }
+Object spread: foo = { ...bar, yyy:123 }
 
 
-=Debuggaus=
+## Debuggaus
 
 Chrome: Kirjoita "debugger" Helpompi tosin lisätä breakpoint.
 
 
-=Javascript=
+## Yleisiä Javascript muistiinpanoja
 
+process.env <= ympäristömuuttujat
 
 JavaScriptissa this:in arvo siis määräytyy siitä, miten metodia on kutsuttu. 
 
@@ -58,24 +63,21 @@ Kaksi modulijärjestelmää: CommonJS(Selaimen ulkopuoliset javascript kirjastot
 
 
 
-=Moduuleja, ohjelmia=
+## Moduuleja, ohjelmia
 
-
-npm           Javascript package manager
-vite          Kehityspalvelin- moduuli reactiin, 
-              HMR - hot module replacement
-nodemon       HMR- ilman reactia (kehitys ilman
-              reactia).
-json-server   Kevyt bakend kehityspalvelin
-axios         Selain-palvelin yhteys moduuli
-express       Backend webserver apukirjasto
-Visual Code   Tekstieditori
-Snippet       Visual code koodipohjia
+- npm: Javascript package manager
+- vite: Kehityspalvelin- moduuli reactiin, HMR - hot module replacement
+- nodemon: HMR- ilman reactia (kehitys ilman reactia).
+- json-server: Kevyt bakend kehityspalvelin
+- axios: Selain-palvelin yhteys moduuli
+- express: Backend webserver apukirjasto
+- Visual Code: Tekstieditori
+- Snippet: Visual code koodipohjia
 
 
 
 
-=Linkkejä=
+## Linkkejä
 
 https://egghead.io/courses/start-learning-react
 
@@ -97,6 +99,8 @@ https://ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm
 https://roy.gbiv.com/untangled/2008/rest-apis-must-be-hypertext-driven
 
 
-=Muuta=
+
+
+## Muuta
 
 Versiointi: Major, Minor, Patch

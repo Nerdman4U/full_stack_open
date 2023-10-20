@@ -13,6 +13,9 @@ Full Stack Open- course 2023
 13:30   Tehtävä 6 tehty. Tauko. 
 Yhteensä: 4 tuntia.
 
+19.10
+10:00   Aloitin. Middlewaret.
+
 
 == Osa 2 ==
 == Osa 1 ==

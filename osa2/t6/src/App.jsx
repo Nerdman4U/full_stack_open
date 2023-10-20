@@ -31,8 +31,9 @@ const App = () => {
 
   // Set all persons and visible persons limited by filter.
   const showPersons = (_persons) => {
-    console.log("showPersons() persons:", _persons)
+    console.log("App.showPersons() persons:", _persons)
     setPersons(_persons)
+    console.log("App.showPersons() newFilter:", newFilter)
     setVisible(filterByName(_persons, newFilter))
   }
 
@@ -95,6 +96,7 @@ const App = () => {
       }
       console.log("handlePersonSubmit() person:", person)
       const changedPerson = { ...person, number:newNumber }
+      console.log("handlePersonSubmit() changedPerson:", changedPerson)
       personService._put(changedPerson.id, changedPerson)
         .then((data) => {
           //console.log("data:", data)
@@ -102,7 +104,7 @@ const App = () => {
             console.log(person.id, changedPerson.id, person.id == changedPerson.id)
             return (person.id == changedPerson.id) ? data : person
           })
-          //console.log("New:", new_persons)
+          console.log("New:", new_persons)
           setNotificationType("notification")
           showNotification(`Henkilön ${data.name} numero päivitetty.`)
           showPersons(new_persons)
@@ -141,11 +143,13 @@ const App = () => {
   const handleFilterChange = (event) => {
     // Show all persons when filter is empty.
     if (!event.target.value) {
+      setNewFilter('');
       setVisible(persons)
       return;
     }  
-    setNewFilter(event.target.value);  
+    setNewFilter(event.target.value);
     setVisible(filterByName(persons, event.target.value))
+    console.log("App.handleFilterChange() newFilter:", event.target.value)
   }
 
   const handleRemoveClick = (event) => {

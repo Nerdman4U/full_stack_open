@@ -9,6 +9,12 @@ Full Stack Open- course 2023
 
 <table>
 <tbody>
+<tr><td>23.10</td><td></td></tr>
+<tr><td>09:30</td><td>MongoDB- harjoituksia</td></tr>
+<tr><td>14:15</td><td>get:api/persons, get:api/persons:id ja post:api/persons</td></tr>
+<tr><td>Yhteensä:</td><td>4.75 tuntia</td></tr>
+
+
 <tr><td>20.10</td><td></td></tr>
 <tr><td>09:00</td><td>Korjasin markdown- syntaksia yms.</td></tr>
 <tr><td>09:20</td><td>Julkaistu Glitchillä</td></tr>

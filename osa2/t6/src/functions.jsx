@@ -19,7 +19,10 @@ const _match = (value, _type) => {
     return valid === _type
   })
   const regexp = new RegExp(value,"i")
-  return (obj) => obj[_type].match(regexp)
+  return (obj) => {
+    if (!obj[_type]) return false
+    return obj[_type].match(regexp)
+  }
 } 
 const byName = (value) => _match(value,"name")
 const byNumber = (value) => _match(value,"number")

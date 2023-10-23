@@ -120,7 +120,7 @@ const App = () => {
     // create/post
     person = {name:newName, number:newNumber}
     personService._post(person).then(data => {
-      console.log("personService._post() data:", data)
+      console.log("App.handlePersonSubmit.personService._post() data:", data)
       setNotificationType("notification")
       showNotification(`Lisätty ${data.name}`)
       const result = persons.concat(data)

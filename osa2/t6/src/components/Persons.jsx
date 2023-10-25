@@ -6,7 +6,7 @@ const Persons = ({persons, handleRemoveClick}) => {
         <tbody>
           {
             persons.map((person) => {
-              return <Person key={person._id} person={person} handleRemoveClick={handleRemoveClick}/>
+              return <Person key={person.id} person={person} handleRemoveClick={handleRemoveClick}/>
             })
           }
         </tbody>

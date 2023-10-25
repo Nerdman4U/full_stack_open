@@ -13,6 +13,7 @@ const Notification = ({notification, notificationType}) => {
   //if (!notification) return
   //const className = `message ${notificationType}`
   const className = (notificationType) ? ["message",notificationType].join(" ") : ""
+  console.log("Notification className:",className,notification,notificationType)
   return (
     <div id="notification" className={className}>{notification}</div>
   )
@@ -42,6 +43,7 @@ const App = () => {
     setNotification()
   }
   const showNotification = (msg) => {
+    console.log("showNotification() msg:", msg)
     if (!msg) {
       clearNotification()
       return
@@ -110,9 +112,12 @@ const App = () => {
           showPersons(new_persons)
         })
         .catch((error) => {
-          console.log("error", error)
           setNotificationType("error")
-          showNotification("Virhe henkilön tietoja päivitettäessä!")
+          console.log("ERROR:", error.response.data.error)
+          const msg = (error.response?.data?.error) ? error.response.data.error : "Virhe henkilön lisäyksessä!"
+          showNotification(msg)
+          //showNotification(error.response.data.error)
+          //showNotification("Virhe henkilön tietoja päivitettäessä!")
         })
       return
     }
@@ -127,8 +132,10 @@ const App = () => {
       showPersons(result)
     })
     .catch((error) => {
+      console.log("Api() post", error.response.data)
       setNotificationType("error")
-      showNotification("Virhe henkilön lisäyksessä!")
+      const msg = (error.response?.data?.error) ? error.response.data.error : "Virhe henkilön lisäyksessä!"
+      showNotification(msg)
     })
   }
 

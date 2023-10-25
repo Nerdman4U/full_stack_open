@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
-import axios from 'axios'
+//import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
-import Button from './components/Button'
-import Person from './components/Person'
+//import Button from './components/Button'
+//import Person from './components/Person'
 import Persons from './components/Persons'
 import { filterByName } from './functions'
 
@@ -166,14 +166,14 @@ const App = () => {
     const person = findPersonById(_id)
     if (!_id) { console.log("No id"); return }
     if (!person) { console.log("No person"); return }
-    personService._delete(_id).then(data => {
+    personService._delete(_id).then(() => {
       // Get data from server after delete.
       // loadPersons()
       // console.log("filter:", persons.filter((person) => person.id != _id))     
       setNotificationType("notification")
       showNotification(`Henkilö ${person.name} poistettu.`)
       showPersons(persons.filter((person) => person.id != _id))
-    }).catch(error => {
+    }).catch(() => {
       setNotificationType("error")
       showNotification("Virhe henkilöä poistettaessa!")
     })
